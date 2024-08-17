@@ -90,10 +90,10 @@
 		<rule id="6"
 			name="Data Transformations should be stored in external DWL Files - Variable"
 			description="Data Transformations should be stored in external DWL Files - Variable"
-			severity="MINOR" type="code_smell">
-			count(//mule:mule/mule:flow/ee:transform/ee:message/ee:set-variable)=0
+			severity="MINOR" applies="file" type="code_smell">
+			count(//ee:set-variable)=0
 			or
-			matches(//mule:mule/mule:flow/ee:transform/ee:message/ee:set-variable/@resource,'^.*dwl$')
+			matches(//ee:set-variable/@resource, '^.*dwl$')
 		</rule>
 		<rule id="7" name="HTTP Listener should use HTTPS protocol"
 			description="HTTP Listener should use HTTPS protocol"
@@ -217,6 +217,48 @@
 			count(//domain:mule-domain/http:request-config[not(@responseTimeout)
 			or not(matches(@responseTimeout,'^\$\{.*\}$'))]) = 0
 		</rule>
+		<rule id="22"
+			name="HTTP Listener - default display name should not be used"
+			description="HTTP Listener - default display name should not be used"
+			severity="MINOR" type="code_smell" locationHint="//*[local-name()='http:listener']">
+			count(//mule:mule/mule:flow/http:listener)=0
+			or
+			count(//mule:mule/mule:flow/http:listener/@doc:name)=1
+		</rule>	
+		<rule id="23"
+			name="Anypoint MQ config - add description"
+			description="Anypoint MQ config - add description"
+			severity="MINOR" type="code_smell" locationHint="//*[local-name()='config'][@*[local-name()='name' and .='Anypoint MQ Config']]">
+			count(//mule:mule/anypoint-mq:config)=0
+			or
+			count(//mule:mule/anypoint-mq:config/@doc:description)=1
+		</rule>		
+		<rule id="24"
+			name="Private object store - should not use hard-coded value"
+			description="Object store - should not use hard-coded value"
+			severity="MINOR" type="code_smell" locationHint="//*[local-name()='private-object-store']">
+			count(//mule:mule/ee:object-store-caching-strategy/os:private-object-store)=0
+			or
+			matches(//mule:mule/ee:object-store-caching-strategy/os:private-object-store/@entryTtl, '^\$\{.*\}$')
+			or
+			matches(//mule:mule/ee:object-store-caching-strategy/os:private-object-store/@expirationInterval, '^\$\{.*\}$')
+		</rule>	
+		<rule id="25"
+			name="Cache Strategy - should not use hard-coded value"
+			description="Cache Strategy - should not use hard-coded value"
+			severity="MINOR" type="code_smell" locationHint="//*[local-name()='object-store-caching-strategy']">
+			count(//mule:mule/ee:object-store-caching-strategy)=0
+			or
+			matches(//mule:mule/ee:object-store-caching-strategy/@keyGenerationExpression, '^\$\{.*\}$')
+		</rule>			
+		<rule id="26"
+			name="Flow-reference names should match a naming convention"
+			description="Flow-reference names should match a naming convention"
+			severity="MINOR" type="code_smell" applies="file" locationHint="//*[local-name()='flow-ref']">
+			count(//mule:flow-ref)=0
+			or
+			matches(//mule:flow-ref/@doc:name, '^[a-z:\\{}]+(-[a-z]+)*$')
+		</rule>	
 	</ruleset>
 </rulestore>
 
